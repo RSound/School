@@ -28,6 +28,13 @@ import android.widget.Toast;
 import com.zjp.view.R;
 import com.zjp.view.main.MainActivity;
 
+import java.util.List;
+
+import cn.bmob.v3.Bmob;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.LogInListener;
+
 
 /**
  * Created by zjp on 2017/10/21
@@ -56,6 +63,10 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //连接服务器，获取数据
+        Bmob.initialize(this, "d9c5aea1719c1e9522a5aa01af4d5ca8");
+
         if(isFullScreen(this)){
             AndroidBug.assistActivity(this);
         }
@@ -73,8 +84,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
             finish();
         }
 
-        //连接服务器，获取数据
-        //Bmob.initialize(this, "d9c5aea1719c1e9522a5aa01af4d5ca8");
+
 
     }
 
@@ -290,21 +300,19 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
             return;
         }
 
-       /* BmobUser user = new BmobUser();
-        user.setUsername(name);
-        user.setPassword(pass);
 
-        user.login(new SaveListener(){
-
+        BmobUser.loginByAccount(this,name, pass, new LogInListener<User>() {
             @Override
-            public void done(Object o, BmobException e) {
+            public void done(User user, BmobException e) {
+                if (e == null) {
 
-                if(e == null){
-
+                    //用户登录状态保存（用户已登录）
                     session.setLoggedin(true);
                     //登录动画
+                    loadingActivity.setTitle("正在登录");
                     loadingActivity = LoadingActivity.showDialog(LoginActivity.this);
                     loadingActivity.show();
+
 
                     new Handler().postDelayed(new Runnable() {
                         public void run() {
@@ -315,15 +323,24 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                         }
                     }, 3000);
 
-                }else{
+                } else {
 
-                    Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+                    loadingActivity.setTitle("正在登录");
+                    loadingActivity = LoadingActivity.showDialog(LoginActivity.this);
+                    loadingActivity.show();
+
+                    new Handler().postDelayed(new Runnable() {
+                        public void run() {
+                            //等待10000毫秒后销毁此页面，并提示登陆失败
+                            Toast.makeText(LoginActivity.this, "登录出现错误", Toast.LENGTH_LONG).show();
+
+                        }
+                    }, 3000);
+
 
                 }
-
             }
-
-        });*/
+        });
 
     }
 }

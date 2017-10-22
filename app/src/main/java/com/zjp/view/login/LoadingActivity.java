@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.zjp.view.R;
 
@@ -46,4 +47,13 @@ public class LoadingActivity extends Dialog {
             ivProgress.startAnimation(animation);
         }
     }
+
+    public void setText(String txt){
+
+        TextView text = findViewById(R.id.tvText);
+
+        text.setText(txt);
+
+    }
+
 }
