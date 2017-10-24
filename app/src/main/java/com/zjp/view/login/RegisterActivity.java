@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,6 +41,8 @@ public class RegisterActivity extends AppCompatActivity {
     private Button bt_register;
 
     private LoadingActivity loadingActivity;
+
+    private  Session session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +136,11 @@ public class RegisterActivity extends AppCompatActivity {
         {
             Toast.makeText(this, "密码不能为空", Toast.LENGTH_LONG).show();
             return;
+        } if(pass.length()<6){
+
+            Toast.makeText(this, "密码必须大于5位", Toast.LENGTH_LONG).show();
+            return;
+
         }
         if(stat.length()==0)
         {
@@ -150,28 +158,36 @@ public class RegisterActivity extends AppCompatActivity {
                         user.setUsername(number);
                         user.setPassword(pass);
 
-                        user.signUp(RegisterActivity.this, new SaveListener() {
+                        user.save(RegisterActivity.this, new SaveListener() {
                             @Override
                             public void onSuccess() {
 
-                                loadingActivity.setTitle("正在注册");
+                                //用户登录状态保存（用户已登录）
+                                session = new Session(RegisterActivity.this);
+                                session.setLoggedin(true);
+
+
+                                Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
+
                                 loadingActivity = LoadingActivity.showDialog(RegisterActivity.this);
                                 loadingActivity.show();
 
                                 new Handler().postDelayed(new Runnable() {
                                     public void run() {
-                                        //等待10000毫秒后销毁此页面，并提示登陆成功
+
+                                        //等待10000毫秒后销毁此页面，并提示注册成功
                                         startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                                         RegisterActivity.this.finish();
-                                        Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_SHORT).show();
+
                                     }
                                 }, 3000);
 
+
                             }
+
                             @Override
                             public void onFailure(int i, String s) {
 
-                                loadingActivity.setTitle("正在注册");
                                 loadingActivity = LoadingActivity.showDialog(RegisterActivity.this);
                                 loadingActivity.show();
 
@@ -188,7 +204,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                     } else {
 
-                        Toast.makeText(RegisterActivity.this, "验证码错误", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "信息输入错误", Toast.LENGTH_SHORT).show();
 
                     }
                 }
@@ -280,12 +296,24 @@ public class RegisterActivity extends AppCompatActivity {
                         }.start();
 
                     } else {
-                        Toast.makeText(RegisterActivity.this, "手机号已被占用！", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RegisterActivity.this, "此手机号操作过于频繁！", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
 
         }
+    }
+
+
+    //返回键直接退出
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            finish();
+            return true;
+        }
+        return super.dispatchKeyEvent(event);
     }
 
 }

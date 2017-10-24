@@ -42,18 +42,11 @@ public class LoadingActivity extends Dialog {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if(hasFocus && dialog != null){
-            ivProgress = (ImageView) dialog.findViewById(R.id.ivProgress);
+            ivProgress = dialog.findViewById(R.id.ivProgress);
             Animation animation = AnimationUtils.loadAnimation(context, R.anim.dialog_progress_anim);
             ivProgress.startAnimation(animation);
         }
     }
 
-    public void setText(String txt){
-
-        TextView text = findViewById(R.id.tvText);
-
-        text.setText(txt);
-
-    }
 
 }

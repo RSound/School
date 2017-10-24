@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.zjp.view.login.RegisterActivity">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,7 +62,7 @@
             android:layout_marginTop="15dp"
             android:background="@drawable/edit_shape"
             android:hint="设置密码"
-            android:maxLength="16"
+            android:maxLength="12"
             android:inputType="textPassword"
             android:textColorHint="#00bbff"
             android:textSize="15dp" />

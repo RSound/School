@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
@@ -13,6 +14,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +33,8 @@ import com.zjp.view.main.MainActivity;
 import java.util.List;
 
 import cn.bmob.v3.Bmob;
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.LogInListener;
-
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.listener.FindListener;
 
 /**
  * Created by zjp on 2017/10/21
@@ -59,6 +59,9 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
     private float scale = 0.6f; //logo缩放比例
     private View service,content;
     private int height = 0 ;
+
+    boolean isExit;//监听退出
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +108,6 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
         bt_login =  findViewById(R.id.btn_login);
         forget_password =  findViewById(R.id.forget_password);
         register =  findViewById(R.id.regist);
-        service = findViewById(R.id.service);
         content = findViewById(R.id.content);
         screenHeight = this.getResources().getDisplayMetrics().heightPixels; //获取屏幕高度
         keyHeight = screenHeight / 3;//弹起高度为屏幕高度的1/3
@@ -165,6 +167,20 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
             }
         });
 
+
+        //忘记密码
+
+        forget_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                startActivity(new Intent(LoginActivity.this,PasswordActivity.class));
+
+
+            }
+        });
+
+
         //登录按钮，设置事件
         bt_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,7 +227,6 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                         mAnimatorTranslateY.start();
                         zoomIn(logo, dist);
                     }
-                    service.setVisibility(View.INVISIBLE);
 
                 } else if (oldBottom != 0 && bottom != 0 && (bottom - oldBottom > keyHeight)) {
                     Log.e("wenzhihao", "down------>"+(bottom - oldBottom));
@@ -223,7 +238,7 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
                         //键盘收回后，logo恢复原来大小，位置同样回到初始位置
                         zoomOut(logo);
                     }
-                    service.setVisibility(View.VISIBLE);
+
                 }
             }
         });
@@ -294,53 +309,113 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
     public void login() {
 
         String name = username.getText().toString();
-        String pass = password.getText().toString();
+        final String pass = password.getText().toString();
         if (name.equals("") || pass.equals("")) {
             Toast.makeText(this, "帐号或密码不能为空", Toast.LENGTH_LONG).show();
             return;
         }
 
-
-        BmobUser.loginByAccount(this,name, pass, new LogInListener<User>() {
+        BmobQuery<User> query = new BmobQuery<>();
+        query.addWhereEqualTo("username",name);
+        query.findObjects(this, new FindListener<User>() {
             @Override
-            public void done(User user, BmobException e) {
-                if (e == null) {
+            public void onSuccess(List<User> list) {
 
-                    //用户登录状态保存（用户已登录）
-                    session.setLoggedin(true);
-                    //登录动画
-                    loadingActivity.setTitle("正在登录");
-                    loadingActivity = LoadingActivity.showDialog(LoginActivity.this);
-                    loadingActivity.show();
+                for (User user :list){
+
+                    if(user.getPassword().equals(pass)){
+
+                       //用户登录状态保存（用户已登录）
+                       session.setLoggedin(true);
+                       //登录动画
+
+                       loadingActivity = LoadingActivity.showDialog(LoginActivity.this);
+                       loadingActivity.show();
 
 
-                    new Handler().postDelayed(new Runnable() {
-                        public void run() {
-                            //等待10000毫秒后销毁此页面，并提示登陆成功
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                            LoginActivity.this.finish();
-                            Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
-                        }
-                    }, 3000);
+                       new Handler().postDelayed(new Runnable() {
+                           public void run() {
+                               //等待10000毫秒后销毁此页面，并提示登陆成功
+                               startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                               LoginActivity.this.finish();
 
-                } else {
+                           }
+                       }, 3000);
 
-                    loadingActivity.setTitle("正在登录");
-                    loadingActivity = LoadingActivity.showDialog(LoginActivity.this);
-                    loadingActivity.show();
+                        return;
 
-                    new Handler().postDelayed(new Runnable() {
-                        public void run() {
-                            //等待10000毫秒后销毁此页面，并提示登陆失败
-                            Toast.makeText(LoginActivity.this, "登录出现错误", Toast.LENGTH_LONG).show();
 
-                        }
-                    }, 3000);
+                   }else {
 
+                       loadingActivity.setTitle("正在登录");
+                       loadingActivity = LoadingActivity.showDialog(LoginActivity.this);
+                       loadingActivity.show();
+
+                       new Handler().postDelayed(new Runnable() {
+                           public void run() {
+                               //等待10000毫秒后销毁此页面，并提示登陆失败
+                               Toast.makeText(LoginActivity.this, "登录出现错误", Toast.LENGTH_LONG).show();
+
+                           }
+                       }, 3000);
+
+                        return;
+
+                   }
 
                 }
+
+                Toast.makeText(LoginActivity.this, "此用户没有注册！", Toast.LENGTH_LONG).show();
+
             }
+
+            @Override
+            public void onError(int i, String s) {
+
+                Toast.makeText(LoginActivity.this, "密码错误！", Toast.LENGTH_LONG).show();
+
+                return;
+
+            }
+
+
         });
 
+
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+            return false;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    public void exit(){
+        if (!isExit) {
+            isExit = true;
+            Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            mHandler.sendEmptyMessageDelayed(0, 2000);//如果间隔两秒内再次按返回键则退出
+        } else {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            startActivity(intent);
+            System.exit(0);
+        }
+    }
+
+    Handler mHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            // TODO Auto-generated method stub
+            super.handleMessage(msg);
+            isExit = false;
+        }
+
+    };
+
 }

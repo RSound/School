@@ -2,14 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zjp.view">
 
-
-    <!--联网 -->
+    <!-- 联网 -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!--获取GSM（2g）、联通3g等网络状态的信息  -->
+    <!-- 获取GSM（2g）、联通3g等网络状态的信息 -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!--获取wifi网络状态的信息 -->
+    <!-- 获取wifi网络状态的信息 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!--允许读取手机状态 -->
+    <!-- 允许读取手机状态 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <!-- 其他权限 短信 -->
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
@@ -33,8 +32,14 @@
         </activity>
         <activity android:name=".main.MainActivity" />
         <activity android:name=".login.LoadingActivity" />
-        <activity android:name=".login.RegisterActivity"
-            android:windowSoftInputMode="stateVisible"></activity>
+        <activity
+            android:name=".login.RegisterActivity"
+            android:windowSoftInputMode="stateVisible" />
+        <activity
+            android:name=".login.PasswordActivity"
+            android:windowSoftInputMode="stateVisible" />
+        <activity android:name=".login.PasswordDialog" />
+        <activity android:name=".common.TitleActivity"></activity>
     </application>
 
 </manifest>
