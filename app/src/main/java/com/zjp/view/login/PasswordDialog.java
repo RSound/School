@@ -4,7 +4,6 @@ package com.zjp.view.login;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +13,7 @@ import android.widget.EditText;
 import com.zjp.view.R;
 
 
-public class CommonDialog extends Dialog {
+public class PasswordDialog extends Dialog {
 
 
 
@@ -29,27 +28,21 @@ public class CommonDialog extends Dialog {
     private Button negtiveBn, positiveBn;
 
 
-    public CommonDialog(Context context) {
-        super(context, R.style.CustomDialog);
+    public PasswordDialog(Context context) {
+        super(context, R.style.PasswordDialog);
     }
 
     private String positive, negtive;
 
-    /**
-     * 底部是否只有一个按钮
-     */
-    private boolean isSingle = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_password_dialog);
+        setContentView(R.layout.password_dialog);
         //按空白处不能取消动画
         setCanceledOnTouchOutside(false);
         //初始化界面控件
         initView();
-        //初始化界面数据
-        refreshView();
         //初始化界面控件的事件
         initEvent();
     }
@@ -79,26 +72,6 @@ public class CommonDialog extends Dialog {
     }
 
     /**
-     * 初始化界面控件的显示数据
-     */
-    private void refreshView() {
-
-        //如果设置按钮的文字
-        if (!TextUtils.isEmpty(positive)) {
-            positiveBn.setText(positive);
-        } else {
-            positiveBn.setText("确定");
-        }
-        if (!TextUtils.isEmpty(negtive)) {
-            negtiveBn.setText(negtive);
-        } else {
-            negtiveBn.setText("取消");
-        }
-
-
-    }
-
-    /**
      * 初始化界面控件
      */
     private void initView() {
@@ -112,7 +85,7 @@ public class CommonDialog extends Dialog {
      */
     public OnClickBottomListener onClickBottomListener;
 
-    public CommonDialog setOnClickBottomListener(OnClickBottomListener onClickBottomListener) {
+    public PasswordDialog setOnClickBottomListener(OnClickBottomListener onClickBottomListener) {
         this.onClickBottomListener = onClickBottomListener;
         return this;
     }
@@ -134,7 +107,7 @@ public class CommonDialog extends Dialog {
         return positive;
     }
 
-    public CommonDialog setPositive(String positive) {
+    public PasswordDialog setPositive(String positive) {
         this.positive = positive;
         return this;
     }
@@ -143,17 +116,8 @@ public class CommonDialog extends Dialog {
         return negtive;
     }
 
-    public CommonDialog setNegtive(String negtive) {
+    public PasswordDialog setNegtive(String negtive) {
         this.negtive = negtive;
-        return this;
-    }
-
-    public boolean isSingle() {
-        return isSingle;
-    }
-
-    public CommonDialog setSingle(boolean single) {
-        isSingle = single;
         return this;
     }
 

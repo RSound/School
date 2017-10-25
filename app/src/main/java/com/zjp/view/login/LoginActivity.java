@@ -14,6 +14,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zjp.view.R;
+import com.zjp.view.common.CommonDialog;
 import com.zjp.view.main.MainActivity;
 
 import java.util.List;
@@ -86,8 +88,6 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
             finish();
         }
-
-
 
     }
 
@@ -311,7 +311,6 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
         String name = username.getText().toString();
         final String pass = password.getText().toString();
         if (name.equals("") || pass.equals("")) {
-            Toast.makeText(this, "帐号或密码不能为空", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -344,37 +343,53 @@ public class LoginActivity extends FragmentActivity implements View.OnClickListe
 
                         return;
 
-
-                   }else {
-
-                       loadingActivity.setTitle("正在登录");
-                       loadingActivity = LoadingActivity.showDialog(LoginActivity.this);
-                       loadingActivity.show();
-
-                       new Handler().postDelayed(new Runnable() {
-                           public void run() {
-                               //等待10000毫秒后销毁此页面，并提示登陆失败
-                               Toast.makeText(LoginActivity.this, "登录出现错误", Toast.LENGTH_LONG).show();
-
-                           }
-                       }, 3000);
-
-                        return;
-
                    }
-
                 }
 
-                Toast.makeText(LoginActivity.this, "此用户没有注册！", Toast.LENGTH_LONG).show();
+                final CommonDialog dialog = new CommonDialog(LoginActivity.this);
+
+                dialog.getWindow().setGravity(Gravity.CENTER);
+
+                dialog.setMytitle("提示");
+                dialog.setMycontent("账号或密码错误");
+                dialog.setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
+                    @Override
+                    public void onPositiveClick() {
+
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNegtiveClick() {
+
+                        dialog.dismiss();
+                    }
+                }).show();
 
             }
 
             @Override
             public void onError(int i, String s) {
 
-                Toast.makeText(LoginActivity.this, "密码错误！", Toast.LENGTH_LONG).show();
+                final CommonDialog dialog = new CommonDialog(LoginActivity.this);
 
-                return;
+                dialog.getWindow().setGravity(Gravity.CENTER);
+
+                dialog.setMytitle("提示");
+                dialog.setMycontent("账号或密码错误");
+                dialog.setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
+                    @Override
+                    public void onPositiveClick() {
+
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNegtiveClick() {
+
+                        dialog.dismiss();
+                    }
+                }).show();
 
             }
 

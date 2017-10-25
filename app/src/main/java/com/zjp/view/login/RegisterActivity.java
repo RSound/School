@@ -124,7 +124,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         if(number.equals(""))
         {
-            Toast.makeText(this, "手机号不能为空", Toast.LENGTH_LONG).show();
             return;
         }
         if(number.length()!=11)
@@ -134,7 +133,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
         if(pass.equals(""))
         {
-            Toast.makeText(this, "密码不能为空", Toast.LENGTH_LONG).show();
             return;
         } if(pass.length()<6){
 
@@ -144,7 +142,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
         if(stat.length()==0)
         {
-            Toast.makeText(this, "验证码不能为空", Toast.LENGTH_LONG).show();
             return;
         }else {
 
@@ -253,7 +250,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         if(number.length()==0)
         {
-            Toast.makeText(this, "手机号不能为空！", Toast.LENGTH_LONG).show();
             return;
         }
         if (number.length() != 11) {
@@ -274,7 +270,6 @@ public class RegisterActivity extends AppCompatActivity {
                     if (e == null) {
                         //发送成功时，让获取验证码按钮不可点击，且为灰色
                         bt_state.setClickable(false);
-                        bt_state.setBackgroundColor(Color.GRAY);
                         Toast.makeText(RegisterActivity.this, "验证码发送成功，请尽快使用！", Toast.LENGTH_SHORT).show();
                         /**
                          * 倒计时1分钟操作

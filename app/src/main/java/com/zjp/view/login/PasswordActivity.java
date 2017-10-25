@@ -2,10 +2,12 @@ package com.zjp.view.login;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 
 
 import com.zjp.view.R;
+import com.zjp.view.main.MainActivity;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -39,6 +42,9 @@ public class PasswordActivity extends AppCompatActivity {
     private EditText state;
 
     private String objectId;
+
+    private Session session;
+    private LoadingActivity loadingActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +96,6 @@ public class PasswordActivity extends AppCompatActivity {
 
 
         if (number.equals("")) {
-            Toast.makeText(this, "手机号不能为空", Toast.LENGTH_LONG).show();
             return;
         }
         if (number.length() != 11) {
@@ -98,7 +103,6 @@ public class PasswordActivity extends AppCompatActivity {
             return;
         }
         if (stat.length() == 0) {
-            Toast.makeText(this, "验证码不能为空", Toast.LENGTH_LONG).show();
             return;
         } else {
 
@@ -108,9 +112,9 @@ public class PasswordActivity extends AppCompatActivity {
 
                     if (e == null) {
 
-                        final CommonDialog dialog = new CommonDialog(PasswordActivity.this);
+                        final PasswordDialog dialog = new PasswordDialog(PasswordActivity.this);
                         dialog.getWindow().setGravity(Gravity.TOP);
-                        dialog.setSingle(true).setOnClickBottomListener(new CommonDialog.OnClickBottomListener() {
+                        dialog.setOnClickBottomListener(new PasswordDialog.OnClickBottomListener() {
                             @Override
                             public void onPositiveClick() {
 
@@ -149,9 +153,30 @@ public class PasswordActivity extends AppCompatActivity {
                                            @Override
                                            public void onSuccess() {
 
-                                                  Toast.makeText(PasswordActivity.this,"密码修改成功！", Toast.LENGTH_SHORT).show();
 
-                                                  return;
+                                               session = new Session(PasswordActivity.this);
+                                               //用户登录状态保存（用户已登录）
+                                               session.setLoggedin(true);
+                                               //登录动画
+
+                                               loadingActivity = LoadingActivity.showDialog(PasswordActivity.this);
+                                               loadingActivity.show();
+
+
+                                               new Handler().postDelayed(new Runnable() {
+                                                   public void run() {
+                                                       //等待10000毫秒后销毁此页面，并提示登陆成功
+                                                       startActivity(new Intent(PasswordActivity.this, MainActivity.class));
+                                                       PasswordActivity.this.finish();
+
+                                                   }
+                                               }, 3000);
+
+
+
+                                               Toast.makeText(PasswordActivity.this,"密码修改成功！", Toast.LENGTH_SHORT).show();
+
+                                               return;
                                             }
 
                                            @Override
@@ -248,7 +273,6 @@ public class PasswordActivity extends AppCompatActivity {
 
         if(number.length()==0)
         {
-            Toast.makeText(this, "手机号不能为空！", Toast.LENGTH_LONG).show();
             return;
         }
         if (number.length() != 11) {

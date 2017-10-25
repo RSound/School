@@ -28,7 +28,17 @@
         <item name="android:backgroundDimEnabled">true</item><!--模糊-->
     </style>
 
-    <style name="CustomDialog" parent="@android:style/Theme.Dialog">
+    //输入更改密码
+    <style name="PasswordDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowIsFloating">true</item>    <!--是否浮在界面上-->
+        <item name="android:windowIsTranslucent">true</item> <!--是否半透明-->
+        <item name="android:windowNoTitle">false</item>       <!--是否有标题-->
+        <item name="android:windowBackground">@android:color/transparent</item> <!--窗口背景色透明-->
+        <item name="android:backgroundDimEnabled">true</item> <!--背景是否模糊显示-->
+    </style>
+
+    //输入更改密码
+    <style name="CommonDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowIsFloating">true</item>    <!--是否浮在界面上-->
         <item name="android:windowIsTranslucent">true</item> <!--是否半透明-->
         <item name="android:windowNoTitle">false</item>       <!--是否有标题-->
